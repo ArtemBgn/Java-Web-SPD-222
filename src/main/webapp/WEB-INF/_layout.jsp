@@ -26,6 +26,7 @@
                 <li><a href="<%=context%>/cart"><i class="material-icons prefix">shopping_cart</i></a></li>
                 <li><a href="<%=context%>/signup"><i class="material-icons">person_add</i></a></li>
                 <li><a href="<%=context%>/share"><i class="material-icons">production_quantity_limits</i></a></li>
+                <li><a href="<%=context%>/addprod"><i class="material-icons">add_to_photos</i></a></li>
             </ul>
         </div>
     </nav>

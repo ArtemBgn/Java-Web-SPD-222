@@ -1,19 +1,9 @@
 console.log("Script works");
 document.addEventListener('DOMContentLoaded', function() {
-    let elems = document.querySelectorAll('.modal');
-    let instances = M.Modal.init(elems, {
-        opacity: 0.5
-    });
     const signupButton = document.getElementById("signup-button");
     if(signupButton) { signupButton.onclick = signupButtonClick; }
-    const authButton = document.getElementById("auth-button");
-    if(authButton) { authButton.onclick = authButtonClick; }
-    const outputButton = document.getElementById("output-button");
-    if(outputButton) { outputButton.onclick = outputButtonClick; }
-    const exitButton = document.getElementById("profile-exit-button");
-    if(exitButton) { exitButton.onclick = outputButtonClick; }
-    const deleteProfileButton = document.getElementById("profile-delete-button");
-    if(deleteProfileButton) { deleteProfileButton.onclick = deleteProfileButtonClick; }
+    const prodButton = document.getElementById("addproduct_button");
+    if(prodButton) { prodButton.onclick = prodButtonClick; }
 });
 
 function signupButtonClick(e) {
@@ -128,6 +118,126 @@ function signupButtonClick(e) {
     if( avatarInput.files.length > 0 ) {
         formData.append( "avatar-user", avatarInput.files[0] ) ;
     }
+    // передаємо - формуємо запит
+    fetch(window.location.href, { method: 'POST', body: formData } )
+        .then( r => r.json())
+        .then( j => {
+            console.log(j);
+            /*if( j.status == 1) { // реєстрація успішна
+                alert( 'реєстрація успішна' );
+                window.location = '/' ; // переходимо на головну сторінку
+            }
+            else { // помилка реєстрації (повідомлення у полі message)
+                allert( j.data.message );
+            }*/
+        } );
+}
+
+function prodButtonClick(e) {
+    //шукаємо форму - батьківській елемент кнопки (e.target)
+    const prodForm = e.target.closest('form');
+    if(!prodForm) {throw "Signup form not found";}
+    // всередені форми signupForm знаходимо елементи
+    //const nameInput = signupForm.querySelector('input[name="user-name"]');
+    //if(! nameInput) {throw "nameInput not found";}
+    //const emailInput = signupForm.querySelector('input[name="user-email"]');
+    //if(! emailInput) {throw "emailInput not found";}
+    //const passwordInput = signupForm.querySelector('input[name="user-password"]');
+    //if(! passwordInput) {throw "passwordInput not found";}
+    //const avatarInput = signupForm.querySelector('input[name="user-avatar"]');
+    //if(! avatarInput) {throw "avatarInput not found";}
+
+    const nameInput = document.getElementById("product_name");
+    if(!nameInput) { throw "product_name not found"; }
+    const priceInput = document.getElementById("product_price");
+    if(!priceInput) { throw "product_price not found"; }
+    const descriptionInput = document.getElementById("product_description");
+    if(!descriptionInput) { throw "product_description not found"; }
+    const categoryInput = prodForm.querySelector('input[name="product_category"]');
+    if(!categoryInput) { throw "product_category not found"; }
+    const photoInput = prodForm.querySelector('input[name="product_photo"]');
+    if(!photoInput) {throw "photoInput not found";}
+
+
+    //// Валідація даних - Home Work
+    let isFormValid = true ;
+    if(nameInput.value === "") {
+        nameInput.classList.remove("valid");
+        nameInput.classList.add("invalid");
+        isFormValid = false;
+    }
+    else {
+        let abets = [" ","A","B","C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "'", "А", "Б", "В", "Г", "Ґ", "Д", "Е", "Є", "Ж", "З", "И", "І", "Ї", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ь", "Ю", "Я"];
+        let nameuser2 = nameInput.value.toLocaleUpperCase();
+        let nameuser = nameuser2.split('');
+        var step;
+        for (step = 0; step < nameuser.length; step++)
+        {
+            if(!abets.includes(nameuser[step]))
+            {
+                nameInput.classList.remove("valid");
+                nameInput.classList.add("invalid");
+                isFormValid = false;
+            }
+            else {
+                nameInput.classList.remove("invalid");
+                nameInput.classList.add("valid");
+            }
+        }
+    }
+    if(priceInput.value === "") {
+        priceInput.classList.remove("valid");
+        priceInput.classList.add("invalid");
+        isFormValid = false;
+    }
+    else {
+        if(priceInput.value<=0)
+        {
+            priceInput.classList.remove("valid");
+            priceInput.classList.add("invalid");
+            isFormValid = false;
+        }
+        else {
+            priceInput.classList.remove("invalid");
+            priceInput.classList.add("valid");
+        }
+    }
+    if(photoInput.value === "") {
+        photoInput.classList.remove("valid");
+        photoInput.classList.add("invalid");
+        console.log("Завантаження продукту буде без ФОТО-!");
+        //isFormValid = false;
+    }
+    else {
+        var x = photoInput.value.indexOf(".");
+        var extension = photoInput.value.slice(x+1);
+        let extensions = ["bmp", "jpg", "jpeg", "gif", "png", "ico"];
+        //let exists = extensions.includes(extension);
+        if(!extensions.includes(extension)) {
+            photoInput.classList.remove("valid");
+            photoInput.classList.add("invalid");
+            console.log("Завантаження продукту буде без ФОТО!");
+            //isFormValid = false;
+        }
+        else {
+            photoInput.classList.remove("invalid");
+            photoInput.classList.add("valid");
+        }
+        //console.log(avatarInput.value + ' ' + extension + ' ' + exists);
+    }
+
+    if(!isFormValid) return;
+    ///кінець валідації
+
+    //Формуємо дані для передачі на бекенд
+    const formData = new FormData();
+    formData.append( "product_name", nameInput.value ) ;
+    formData.append( "product_price", priceInput.value ) ;
+    formData.append( "product_description", descriptionInput.value ) ;
+    formData.append( "product_category", categoryInput.value ) ;
+    if( photoInput.files.length > 0 ) {
+        formData.append( "product_photo", photoInput.files[0] ) ;
+    }//*/
     // передаємо - формуємо запит
     fetch(window.location.href, { method: 'POST', body: formData } )
         .then( r => r.json())

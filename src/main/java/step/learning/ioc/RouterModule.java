@@ -10,5 +10,6 @@ public class RouterModule extends ServletModule {
         serve("/cart").with( CartServlet.class ) ;
         serve("/signup").with( SignupServlet.class ) ;
         serve("/share").with( ShareServlet.class ) ;
+        serve("/addprod").with( AddprodServlet.class ) ;
     }
 }
