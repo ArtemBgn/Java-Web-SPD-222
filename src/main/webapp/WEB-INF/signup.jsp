@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <h1>Зареєструватись на сайті</h1>
+<div id="for-error-message" class="truncate"></div>
 <div class="row">
     <form class="col s12" method="post">
         <div class="row">

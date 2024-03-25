@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function signupButtonClick(e) {
+    //шукаємо блок для вставки повідомлення про помилку
+    const errorDiv = document.getElementById('for-error-message');
+    if(!errorDiv) {throw  "errorDiv form not found";}
     //шукаємо форму - батьківській елемент кнопки (e.target)
     const signupForm = e.target.closest('form');
     if(! signupForm) {throw "Signup form not found";}
@@ -22,7 +25,7 @@ function signupButtonClick(e) {
     const avatarInput = signupForm.querySelector('input[name="user-avatar"]');
     if(! avatarInput) {throw "avatarInput not found";}
 
-    //// Валідація даних - Home Work
+    //// Валідація даних
     let isFormValid = true ;
     if(nameInput.value == "") {
         nameInput.classList.remove("valid");
@@ -93,7 +96,7 @@ function signupButtonClick(e) {
     else {
         var x = avatarInput.value.indexOf(".");
         var extension = avatarInput.value.slice(x+1);
-        let extensions = ["bmp", "jpg", "jpeg", "gif", "png", "ico"];
+        let extensions = ["bmp", "jpg", "jpeg", "gif", "png", "ico", "jfif"];
         //let exists = extensions.includes(extension);
         if(!extensions.includes(extension)) {
             avatarInput.classList.remove("valid");
@@ -120,17 +123,22 @@ function signupButtonClick(e) {
     }
     // передаємо - формуємо запит
     fetch(window.location.href, { method: 'POST', body: formData } )
-        .then( r => r.json())
-        .then( j => {
-            console.log(j);
-            /*if( j.status == 1) { // реєстрація успішна
-                alert( 'реєстрація успішна' );
-                window.location = '/' ; // переходимо на головну сторінку
+        .then( r => {
+            if(!r.ok) {
+                console.log("УСПІШНО!!");
+                errorDiv.innerText = "";
+                window.alert( "Ви успішно зареєструвалися!" );
+                window.location = '/Java_Web_SPD_222' ;
             }
-            else { // помилка реєстрації (повідомлення у полі message)
-                allert( j.data.message );
-            }*/
-        } );
+            else {
+                console.log("не успішно!!!!");
+                passwordInput.value = "";
+                repeatpasswordInput.value = "";
+                errorDiv.classList.add("red-text");
+                errorDiv.innerText = "Виникли помилки при реєстрації.\n Код помилки: " + r.status.toString();
+                //window.alert( r.status );
+            }
+        });
 }
 
 function prodButtonClick(e) {
