@@ -23,10 +23,12 @@
         <div class="nav-wrapper lime">
             <a href="<%=context%>" class="brand-logo left">Logo</a>
             <ul id="nav-mobile" class="right">
+                <li><a href="<%=context%>/shop">ШОП</a></li>
                 <li><a href="<%=context%>/cart"><i class="material-icons prefix">shopping_cart</i></a></li>
                 <li><a href="<%=context%>/signup"><i class="material-icons">person_add</i></a></li>
                 <li><a href="<%=context%>/share"><i class="material-icons">production_quantity_limits</i></a></li>
                 <li><a href="<%=context%>/addprod"><i class="material-icons">add_to_photos</i></a></li>
+                <li data-auth="avatar"><a href="#auth-modal" class="modal-trigger"><i class="material-icons">key</i></a></li><!-- Modal Trigger -->
             </ul>
         </div>
     </nav>
@@ -61,6 +63,30 @@
         </div>
     </div>
 </footer>
+
+<!-- Modal Structure -->
+<div id="auth-modal" class="modal">
+    <div class="col s12">
+        <div class="modal-content">
+            <h4>Введіть e-mail та пароль для входу</h4>
+            <div class="input-field col s6" >
+                <i class="material-icons prefix">email</i>
+                <input id="user-input-email" type="text" class="validate" name="auth-email">
+                <label for="user-input-email">Email</label>
+            </div>
+            <div class="input-field col s6">
+                <i class="material-icons prefix">lock</i>
+                <input id="user-input-password" type="password" class="validate" name="auth-password">
+                <label for="user-input-password">Password</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <span id="modal-auth-message"></span>
+            <button class="modal-close btn-flat grey">Закрити</button>
+            <button class="btn-flat lime" style="margin-left: 15px" id="auth-button">Вхід</button>
+        </div>
+    </div>
+</div>
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="<%=context%>/js/site.js"></script>
