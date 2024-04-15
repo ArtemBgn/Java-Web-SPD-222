@@ -28,6 +28,22 @@ public class AuthServlet extends HttpServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //super.doDelete(req, resp);
+        String token = req.getParameter("token");
+        if( token == null || token.isEmpty() ) {
+            sendRest(resp, "error", "Property 'token' required", null);
+            return ;
+        }
+        else if(!userDao.exitUser(token)) {
+            sendRest(resp, "error", "Oops!.. something went wrong...", token);
+            return ;
+        }
+        else {
+            sendRest(resp, "success", "Logout has been completed!", null );
+        }
+    }
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String token = req.getParameter("token");
         if( token == null || token.isEmpty() ) {

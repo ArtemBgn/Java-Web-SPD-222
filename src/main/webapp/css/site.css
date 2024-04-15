@@ -10,3 +10,7 @@
     border-radius: 50%;
     margin: 10%;
 }
+.product-card-btn {
+    bottom: 7px !important;
+    right: 7px !important;
+}

@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="file-field input-field col s12 m6">
-                    <div class="btn amber lighten-1">
+                    <div class="btn lime lighten-1">
                         <span>Зображення товару</span>
                         <input id="product-img" name="product-img" type="file">
                     </div>
@@ -41,7 +41,7 @@
     </div>
     <div class="row">
         <div class="col s12 m12 center">
-            <button type="button" class="btn amber lighten-1" id="add-product-button">Зберегти</button>
+            <button type="button" class="btn lime lighten-1" id="add-product-button">Зберегти</button>
             <div id="add-product-result"></div>
         </div>
     </div>

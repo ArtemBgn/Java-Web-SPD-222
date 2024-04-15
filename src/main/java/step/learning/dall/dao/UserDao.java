@@ -15,8 +15,24 @@ public class UserDao {
     public UserDao(DbService dbService) {
         this.dbService = dbService;
     }
-    public String generateToken(User user)
-    {
+    public boolean exitUser(String token) {
+        Timestamp time_expires = new Timestamp(new java.util.Date().getTime());
+        updateTimeToken(token, time_expires);
+        /*
+        String sql = "UPDATE Tokens SET token_expires = ? WHERE token_id = ${token}";
+        try( PreparedStatement prep = dbService.getConnection().prepareStatement(sql))
+        {
+            prep.setTimestamp(1, new Timestamp(new java.util.Date().getTime()-1));
+            prep.executeUpdate();
+            return true;
+        }
+        catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+            System.out.println(sql);
+        }*/
+        return true;
+    }
+    public String generateToken(User user) {
         // перевіряємо чи є валідний токен
         String sqlGetTokenByUser = "SELECT t.* FROM Tokens t WHERE t.user_id = ? AND t.token_expires > CURRENT_TIMESTAMP LIMIT 1";
         try( PreparedStatement prep = dbService.getConnection().prepareStatement(sqlGetTokenByUser))
@@ -73,6 +89,8 @@ public class UserDao {
             prep.setString(1, token);
             ResultSet res = prep.executeQuery();
             if( res.next()) { //якщо є дані (значить користувача знайдено)
+                Timestamp time_expires = new Timestamp(new java.util.Date().getTime()+60*5*500); //res.getTimestamp("token_expires");
+                updateTimeToken(token, time_expires);
                 return User.fromResultSet( res );
             }
         }

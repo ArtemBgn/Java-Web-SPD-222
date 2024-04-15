@@ -1,36 +1,22 @@
 package step.learning.dall.dto;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.UUID;
 
-public class Product {
+public class Product2 {
     private UUID id;
     private  String name;
     private String description;
     private double price;
-    private String category;
     private String image;
-    public Product() {
+
+    public Product2() {
     }
 
-    public Product(ResultSet resultSet) throws SQLException {
-        this (
-                UUID.fromString(resultSet.getString("product_id")),
-                resultSet.getString("product_name"),
-                resultSet.getString("product_description"),
-                resultSet.getDouble("product_price"),
-                resultSet.getString("product_category"),
-                resultSet.getString("product_image")
-        );
-    }
-
-    public Product(UUID id, String name, String description, double price, String category, String image) {
+    public Product2(UUID id, String name, String description, double price, String image) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.category = category;
         this.image = image;
     }
 
@@ -65,11 +51,11 @@ public class Product {
     public void setPrice(double price) {
         this.price = price;
     }
-    public String getCategory() { return this.category; }
-    public void setCategory(String category) { this.category = category; }
+
     public String getImage() {
         return image;
     }
+
     public void setImage(String image) {
         this.image = image;
     }

@@ -6,8 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.fileupload.FileItem;
+import step.learning.dall.dao.CartDao;
 import step.learning.dall.dao.ProductDao;
 import step.learning.dall.dto.Product;
+import step.learning.dall.dto.Product2;
 import step.learning.dall.dto.User;
 import step.learning.services.form.FormParseResult;
 import step.learning.services.form.FormParseService;
@@ -26,15 +28,26 @@ import java.util.UUID;
 public class ShopApiServlet extends HttpServlet {
     private final FormParseService formParseService;
     private final ProductDao productDao;
+    private final CartDao cartDao;
     @Inject
-    public ShopApiServlet(FormParseService formParseService, ProductDao productDao) {
+    public ShopApiServlet(FormParseService formParseService, ProductDao productDao, CartDao cartDao) {
         this.formParseService = formParseService;
         this.productDao = productDao;
+        this.cartDao = cartDao;
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user-id");
+        String productId = req.getParameter("product-id");
+        cartDao.add(userId, productId, 1);
+        sendRest( resp, "success", "Cart item add", null );
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        FormParseResult parseResult = formParseService.parse(req);
+
+        /*FormParseResult parseResult = formParseService.parse(req);
         Map<String, String> fields = parseResult.getFields();
         Map<String, FileItem> files = parseResult.getFiles();
         //Gson gson = new GsonBuilder().serializeNulls().create();
@@ -97,6 +110,82 @@ public class ShopApiServlet extends HttpServlet {
         }
         else {
             sendRest( resp, "error", "Internal error, look at server's logs", null ) ;
+        }
+         /**/
+        FormParseResult parseResult = formParseService.parse(req);
+        Map<String, String> fields = parseResult.getFields();
+        Map<String, FileItem> files = parseResult.getFiles();
+
+        String name = fields.get("product_name");
+        if( name == null || name.isEmpty() ) {
+            sendRest( resp, "error", "Property 'name' required", null ) ;
+            return ;
+        }
+        String price = fields.get("product_price");
+        if( price == null || price.isEmpty() ) {
+            sendRest( resp, "error", "Property 'price' required", null ) ;
+            return ;
+        }
+        String description = fields.get("product_description");
+        if( description == null || description.isEmpty() ) {
+            sendRest( resp, "error", "Property 'description' required", null ) ;
+            return ;
+        }
+        String category = fields.get("product_category");
+        if( category == null || category.isEmpty() ) {
+            sendRest( resp, "error", "Property 'category' required", null ) ;
+            return ;
+        }
+        Product product = new Product();
+        product.setId(UUID.randomUUID());
+        product.setName(name);
+        product.setPrice(Double.parseDouble(price));
+        product.setDescription(description);
+        product.setCategory(category);
+        //sendRest( resp, "success", "Property 'all ok' required", null ) ;
+////////
+        String token = fields.get("token");
+
+        FileItem photo = files.get("product_photo");
+        if(photo != null)
+        {
+            // не обов'язкове поле, але якщо є, то проходить перевірку
+            String path = req.getServletContext().getRealPath("/") +
+                    "img" + File.separator + "products" + File.separator;
+            // визначаємо тип файлу (розширення)
+            int dotPosition = photo.getName().lastIndexOf('.');
+            if(dotPosition < 0) {
+                sendRest(resp, "error", "Photo file must have extension", null);
+                return;
+            }
+            String ext = photo.getName().substring(dotPosition);
+            // формуємо нове ім'я
+            String savedName;
+            File savedFile;
+            do {
+                savedName = UUID.randomUUID() + ext;
+                savedFile = new File(path, savedName);
+            } while (savedFile.exists());
+
+            try
+            {
+                photo.write(savedFile);
+                product.setImage(savedName);
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        if(productDao.verificToken(token)) {
+            if(productDao.add(product)) {
+                sendRest(resp, "success", "Product registered", product.getId().toString());
+            }
+            else {
+                sendRest(resp, "error", "Product not add", null);
+            }
+        }
+        else {
+            sendRest(resp, "403", "Доступ до запиту заборонено!", null);
         }
     }
 

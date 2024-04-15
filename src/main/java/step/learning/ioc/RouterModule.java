@@ -16,7 +16,6 @@ public class RouterModule extends ServletModule {
         serve("/addprod").with( AddprodServlet.class ) ;
         serve("/auth").with( AuthServlet.class ) ;
         serve("/shop").with( ShopServlet.class ) ;
-
         serve("/shop-api").with( ShopApiServlet.class ) ;
     }
 }

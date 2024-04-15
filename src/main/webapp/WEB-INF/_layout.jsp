@@ -23,6 +23,7 @@
         <div class="nav-wrapper lime">
             <a href="<%=context%>" class="brand-logo left">Logo</a>
             <ul id="nav-mobile" class="right">
+                <li><button id="exit-profile-button" type="button" class="waves-effect waves-light btn">EXIT</button></li>
                 <li><a href="<%=context%>/shop">ШОП</a></li>
                 <li><a href="<%=context%>/cart"><i class="material-icons prefix">shopping_cart</i></a></li>
                 <li><a href="<%=context%>/signup"><i class="material-icons">person_add</i></a></li>
@@ -34,7 +35,7 @@
     </nav>
 </header>
 
-<main class="container">
+<main class="<%=request.getAttribute("skip-container") == null ? "container" : ""%>">
     <jsp:include page="<%= bodyFile %>"/>
 </main>
 
