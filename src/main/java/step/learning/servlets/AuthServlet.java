@@ -8,6 +8,8 @@ import com.google.inject.Singleton;
 import step.learning.dall.dao.UserDao;
 import step.learning.dall.dto.User;
 import step.learning.services.kdf.KdfService;
+
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,8 @@ public class AuthServlet extends HttpServlet {
             return ;
         }
         else {
+            ServletContext context = getServletContext();
+            context.removeAttribute("user-id");
             sendRest(resp, "success", "Logout has been completed!", null );
         }
     }
@@ -75,6 +79,10 @@ public class AuthServlet extends HttpServlet {
             Gson gson = new GsonBuilder().serializeNulls().create();
             rest.add("data", gson.toJsonTree(user));
             resp.getWriter().print( gson.toJson(rest) );
+
+            String userid = user.getId().toString();
+            ServletContext context = getServletContext();
+            context.setAttribute("user-id", userid);
             /*
             JsonObject data = null;
             if(token != null)
@@ -88,7 +96,6 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
-        //if( email ==
         if( email == null || email.isEmpty() ) {
             sendRest(resp, "error", "Property 'email' required", null);
             return ;

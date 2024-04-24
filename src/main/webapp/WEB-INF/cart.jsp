@@ -6,7 +6,7 @@
 <%
     String context = request.getContextPath();
     //вилучаємо дані передані контролером
-    //CartItem[] cartItems = (CartItem[]) request.getAttribute("cart");
+    CartItem[] cartItems = (CartItem[]) request.getAttribute("cart");
     CartPageModel model = (CartPageModel) request.getAttribute("model");
 %>
 
@@ -28,13 +28,14 @@
             </div>
             <%}%>
         </div>
+        <button type="button" data-next="<%=model.getProducts()%>" class="btn-floating halfway-fab waves-light red">next</button>
     </div>
     <div class="col s4">
         <h1>Ваш кошик</h1>
         <%-- Відображення даних--%>
         <% for(CartItem item : model.getCartItems()) {%>
         <div class="col s12 m7">
-            <h2 class="header">Card</h2>
+            <h2 class="header"><%=item.getProductId()%></h2>
             <div class="card horizontal">
                 <div class="card-image flex1"><img src="<%=context%>/img/no-image.png" alt="img"></div>
                 <div class="card-stacked flex3">
@@ -42,7 +43,10 @@
                         <p><%=item.getId()%></p>
                         <p><%=item.getProductId()%></p>
                         <p><%=item.getCount()%></p></div>
-                    <div class="card-action"><a href="#">видалити з кошику</a></div>
+                    <div class="card-action">
+                        <button type="button" data-product-delete="<%=item.getProductId()%>" class="btn-floating halfway-fab waves-light red">видалити</button>
+                        <!--<a data-product-delete="%=item.getProductId()%>" class="btn-floating halfway-fab waves-effect waves-light red">видалити з кошику</a>-->
+                    </div>
                 </div>
             </div>
         </div>

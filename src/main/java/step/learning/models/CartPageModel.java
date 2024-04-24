@@ -13,11 +13,7 @@ public class CartPageModel {
         this.products = products;
         this.cartItems = cartItem;
     }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
+    public List<Product> getProducts() { return products; }
     public List<CartItem> getCartItems() {
         return cartItems;
     }

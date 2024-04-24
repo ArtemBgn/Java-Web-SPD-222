@@ -44,10 +44,33 @@ function serveCartButtons() {
         btn.onclick = () => {
             let productId = btn.getAttribute('data-product');
             fetch(`/${getContext()}/shop-api?user-id=${userId}&product-id=${productId}`, {method: 'PUT'})
+                .then(r => {
+                    if(r.ok)
+                    {
+                        window.alert( "Товар додано до кошику!" );
+                    }
+                    else {
+                        window.alert( "Oops!..щось пішло не так.." );
+                    }
+                });
+        }
+    }
+}
+function serveCartButtonsDelete() {
+    const userId = document.querySelector('[data-user-id]').getAttribute('data-user-id');
+    // шукаємо всі кнопки "видалити з кошику" з атрибутом ознакою
+    for(let btn of document.querySelectorAll('[data-product-delete]')) {
+        btn.onclick = () => {
+            let productId = btn.getAttribute('data-product-delete');
+            fetch(`/${getContext()}/shop-api?user-id=${userId}&product-id=${productId}`, {method: 'DELETE'})
                 .then(r => r.json())
                 .then(console.log);
         }
     }
+}
+function serveCartButtonNext() {
+    const userId = document.querySelector('[data-user-id]').getAttribute('data-user-id');
+    let btn = document.querySelector('[data-next]');
 }
 function signupButtonClick(e) {
     //шукаємо блок для вставки повідомлення про помилку
@@ -390,6 +413,8 @@ function checkAuth() {
                              });
                      }
                      serveCartButtons();
+                     serveCartButtonsDelete();
+                     serveCartButtonNext();
                  }
              })
          //.then( console.log );

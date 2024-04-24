@@ -45,6 +45,14 @@ public class ShopApiServlet extends HttpServlet {
     }
 
     @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String userId = req.getParameter("user-id");
+        String productId = req.getParameter("product-id");
+        cartDao.deleteProduct(userId, productId);
+        sendRest( resp, "success", "Cart item delete", null );
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         /*FormParseResult parseResult = formParseService.parse(req);
